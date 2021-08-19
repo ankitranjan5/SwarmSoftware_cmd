@@ -3,6 +3,8 @@ from api import *
 from time import sleep
 import numpy as np
 import random as r
+import cv2
+im = cv2.imread("map.png")
 
 
 #######    YOUR CODE FROM HERE #######################
@@ -34,22 +36,59 @@ def neighbours(point):  #returns valid neighbours
 		links.append((i+1,grid[newX][newY]))
 	return links
 
+def correct(l,x,y):
+	for i in range(1,9):
+		dis = np.square()
+
 
 ########## Default Level 1 ##########
 def level1(botId):
+	green = []
+	for i in range(200):
+		for j in range(200):
+			if(im[i][j][0] == 0 and im[i][j][1] == 255 and im[i][j][2] == 0):
+				green.append([i,j])
+	#print(green[1])
+
+	
+
+	# x,y = get_botPose_list[0]			
 	
 	mission_complete=False
 	botId=0
-	while(not mission_complete):
-		successful_move, mission_complete = send_command(botId,r.randint(1,8))
-		if successful_move:
-			print("YES")
-		else:
-			print("NO")
-		if mission_complete:
-			print("MISSION COMPLETE")
-		pos=get_botPose_list()
-		print(pos[0])
+
+	for j in green:
+		while(not mission_complete):
+			for i in range(1,9):
+				a = get_botPose_list()
+				x,y = a[0]
+				# if(a[0] in green):
+
+				successful_move, mission_complete = send_command(botId,i)
+				if successful_move:
+					b = get_botPose_list()
+					x1,y1 = b[0]
+					if(((j[0]-x)**2 + (j[1]-y)**2) > ((j[0]-x1)**2 + (j[1]-y1)**2)):
+						continue
+					else:
+						if(i<=4):
+							_,_ = send_command(botId,i+4)
+						else:
+							_,_ = send_command(botId,i-4)	
+
+
+
+
+	# while(not mission_complete):
+	# 	successful_move, mission_complete = send_command(botId,r.randint(1,8))
+	# 	if successful_move:
+	# 		print("YES")
+	# 	else:
+	# 		print("NO")
+	# 	if mission_complete:
+	# 		print("MISSION COMPLETE")
+	# 	pos=get_botPose_list()
+	# 	print(pos[0])
 
 
 def level2(botId):
